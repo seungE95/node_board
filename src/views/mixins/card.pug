@@ -1,0 +1,7 @@
+mixin boardMixins(board)
+    div(style="width: 18rem;").card
+        img(src=`${board.imgUrl}` alt="logo" height="200").card-img-top
+        div.card-body
+            h5.card-title=board.title
+            p.card-text=board.text
+            a(href=`board/${board.id}/edit`).btn.btn-primary See more
