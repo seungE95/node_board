@@ -1,3 +1,5 @@
+import { render } from "pug";
+
 export const home = (req, res) => {
     return res.render("home");
 }
@@ -6,23 +8,62 @@ export const search = (req, res) => {
     return res.render("Search");
 }
 
-export const seeBoard = (req, res) => {
-    return res.render("watch", {boards});
-}
-
-export const editBoard = (req, res) => {
+export const seeBoard = async (req, res) => {
     const {id} = req.params;
-    const board = boards[id -1];
-    return res.render("edit", {board});
+    const board = await Board.findById(id);
+    if(!board){
+        return res.render("404", {pageTitle: "Page Not Found"});
+    }
+    return res.render("watch", {board, pageTitle: "Watch"});
 }
 
-export const deleteBoard = (req, res) => {
-    return res.render("Delete Board");
+export const getEditBoard = async (req, res) => {
+    const {id} = req.params;
+    const board = await Board.findById(id);
+    if(!board){
+        return res.render("404", {pageTitle: "Page Not Found"});
+    }
+    return res.render("edit", {board, pageTitle: "Edit"});
 }
 
-export const writeBoard = (req, res) => {
-    return res.render("Write Board");
+export const postEditBoard = async (req, res) => {
+    const {id} = req.params;
+    const {title, imgUrl, content } = req.body;
+    const board = await Board.findById(id);
+    if(!board){
+        return res.render("404", {pageTitle: "Page Not Found"});
+    }
+    await Board.findByIdAndUpdate(id, {title,imgUrl,content});
+    return res.redirect("/board/${id}");
 }
+
+export const getDeleteBoard = async(req, res) => {
+    const {id} = req.params;
+    await Board.findByIdAndDelete(id);
+    return res.render("/");
+}
+
+export const getWriteBoard = (req, res) => {
+    return res.render("Write");
+};
+
+export const postWriteBoard = async (req, res) => {
+    const { title, imgUrl, content } = req.body;
+    
+    try {
+        const board = await Board.create({
+            title,
+            imgUrl,
+            content,
+        });
+        return res.render("/");
+    } catch (error) {
+        return render("write", {
+            errorMessage: error._message,
+            pageTitle: "Write",
+        });
+    }
+};
 
 let boards = [
     {
