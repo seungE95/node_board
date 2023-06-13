@@ -1,14 +1,25 @@
 import { render } from "pug";
 
-export const home = (req, res) => {
-    return res.render("home");
+export const home = async (req, res) => {
+    const {id} = req.params;
+    const boards = await Board.find({}).sort({createAt: "desc"});
+    return res.render("home", {boards});
 }
 
-export const search = (req, res) => {
-    return res.render("Search");
+export const search = async (req, res) => {
+    const {kyword} = req.query;
+    let boards = [];
+    if(keyword){
+        boards = await Board.find({
+            title: {
+                $regex: new RegExp(keyword,"i")
+            },
+        });
+    }
+    return res.render("search",{boards});
 }
 
-export const seeBoard = async (req, res) => {
+export const getSeeBoard = async (req, res) => {
     const {id} = req.params;
     const board = await Board.findById(id);
     if(!board){
