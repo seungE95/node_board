@@ -7,6 +7,7 @@ export const home = async (req, res) => {
 }
 
 export const search = async (req, res) => {
+
     const {kyword} = req.query;
     let boards = [];
     if(keyword){
