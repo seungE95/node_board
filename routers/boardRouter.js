@@ -1,6 +1,6 @@
 import express from "express";
 import {
-    seeBoard,
+    getSeeBoard,
     getEditBoard,
     getDeleteBoard,
     getWriteBoard,
@@ -10,7 +10,7 @@ import {
 const boardRouter = express.Router();
 
 boardRouter.route("/write").get(getWriteBoard).post(postWriteBoard);
-boardRouter.get("/:id", seeBoard);
+boardRouter.get("/:id", getSeeBoard);
 boardRouter.route("/:id/edit").get(getEditBoard).post(postEditBoard);
 boardRouter.get("/:id/delete", getDeleteBoard);
 
