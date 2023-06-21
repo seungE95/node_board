@@ -46,7 +46,7 @@ export const getLogin = (req,res) =>{
 
 export const postLogin = async (req,res) =>{
     const {username, password} = req.body;
-    const user = await User.findOnd({username});
+    const user = await User.findOnd({username});  
     if(!user){
         return res
             .status(400)

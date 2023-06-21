@@ -6,7 +6,7 @@ const boardSchema = new mongoose.Schema({
     createdAt: {type: Date, required: true, default: Date.now},
     imgUrl: {type : String, trime: true},
     meta: {
-        views: {type: Number, default:0, required: ture},
+        views: {type: Number, default:0, required: true},
         rating: {type: Number, default:0, required: true},
     },
 });

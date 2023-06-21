@@ -1,6 +1,6 @@
 import express from "express";
 import session from "express-session";
-import MongoStore from "connect-mongo";
+const MongoStore = require("connect-mongo");
 import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
 import boardRouter from "./routers/boardRouter";
@@ -19,14 +19,15 @@ app.set("view engine", "pug");  //pug 설정
 app.set("views", process.cwd() + "/src/views"); //pug 폴더 설정
 
 app.use(logger);    //morgan middleware 사용
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(
     session({
-        secret: process.env.COOKIE_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        store: MongoStore.create({
-            mongoUrl: process.env.DB_URL,
+        secret: process.env.COOKIE_SECRET,  //암호화하는데 쓰일 키 (쿠키에 secret을 넣는것)
+        resave: false,                      //요청이 왔을 때 세션에 수정사항이 생기지 않도록 다시 저장할지 여부
+        saveUninitialized: false,           //세션에 저장할 내역이 없더라도 세션을 저장할지 여부
+        store: MongoStore.create({          
+            mongoUrl: 'mongodb://localhost:27017/admin',
+            //process.env.DB_URL,
         }),
     })
 );

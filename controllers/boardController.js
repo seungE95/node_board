@@ -1,4 +1,5 @@
 import { render } from "pug";
+import { Board } from "../Board.js";
 
 export const home = async (req, res) => {
     const {id} = req.params;
@@ -8,7 +9,7 @@ export const home = async (req, res) => {
 
 export const search = async (req, res) => {
 
-    const {kyword} = req.query;
+    const {keyword} = req.query;
     let boards = [];
     if(keyword){
         boards = await Board.find({
@@ -20,14 +21,14 @@ export const search = async (req, res) => {
     return res.render("search",{boards});
 }
 
-export const getSeeBoard = async (req, res) => {
-    const {id} = req.params;
+export const seeBoard = async (req, res) => {
+    const { id } = req.params;
     const board = await Board.findById(id);
-    if(!board){
-        return res.render("404", {pageTitle: "Page Not Found"});
+    if (!board) {
+    return res.render("404", { pageTitle: "Page Not Found" });
     }
-    return res.render("watch", {board, pageTitle: "Watch"});
-}
+    return res.render("watch", { board, pageTitle: "Watch" });
+};
 
 export const getEditBoard = async (req, res) => {
     const {id} = req.params;
