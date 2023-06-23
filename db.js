@@ -1,18 +1,13 @@
 import mongoose from "mongoose";
 require('dotenv').config();
 
-const db = mongoose
-    .connect(process.env.DB_URL)
-    .then((res) => console.log("Connected to DB 🎄"))
-    .catch((err) => console.log(err));
+mongoose.connect(process.env.DB_URL);
 
-// const{ DB_URL } = process.env;
+const db = mongoose.connection;
 
-// mongoose.connect(process.env.DB_URL);
+const handleOpen = () => console.log("Connected to DB 🎄");
+const handleError = (error) => console.log("DB Error", error);
+db.on("error", handleError);
+db.once("open", handleOpen);
 
-// const db = mongoose.connection;
-
-// const handleOpen = () => console.log("Connected to DB 🎄");
-// const handleError = (error) => console.log("DB Error", error);
-// db.on("error", handleError);
-// db.once("open", handleOpen);
+export default db;

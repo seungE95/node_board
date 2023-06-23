@@ -1,10 +1,15 @@
 import { render } from "pug";
-import { Board } from "../Board.js";
+import { Board } from "../models/Board";
 
 export const home = async (req, res) => {
-    const {id} = req.params;
-    const boards = await Board.find({}).sort({createAt: "desc"});
-    return res.render("home", {boards});
+    const { id } = req.params;
+    try {
+        const boards = await Board.find({}).sort({createAt: "desc"});
+        return res.render("home", {boards});
+    } catch (error) {
+        console.log("error :: "+error);
+    }
+    return res.render("home");
 }
 
 export const search = async (req, res) => {
@@ -21,7 +26,7 @@ export const search = async (req, res) => {
     return res.render("search",{boards});
 }
 
-export const seeBoard = async (req, res) => {
+export const getSeeBoard = async (req, res) => {
     const { id } = req.params;
     const board = await Board.findById(id);
     if (!board) {
@@ -78,65 +83,65 @@ export const postWriteBoard = async (req, res) => {
     }
 };
 
-let boards = [
-    {
-        id: 1,
-        title: "1st board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 2,
-        title: "2nd board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 3,
-        title: "3rd board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 4,
-        title: "4th board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 5,
-        title: "5th board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 6,
-        title: "6th board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 7,
-        title: "7th board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 8,
-        title: "8th board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 9,
-        title: "9th board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-    {
-        id: 10,
-        title: "10th board",
-        text: "Node.js simple project 입니다 📝",
-        imgUrl: "/image/Node.js.png",
-    },
-];
+// let boards = [
+//     {
+//         id: 1,
+//         title: "1st board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 2,
+//         title: "2nd board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 3,
+//         title: "3rd board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 4,
+//         title: "4th board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 5,
+//         title: "5th board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 6,
+//         title: "6th board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 7,
+//         title: "7th board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 8,
+//         title: "8th board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 9,
+//         title: "9th board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+//     {
+//         id: 10,
+//         title: "10th board",
+//         text: "Node.js simple project 입니다 📝",
+//         imgUrl: "/image/Node.js.png",
+//     },
+// ];
