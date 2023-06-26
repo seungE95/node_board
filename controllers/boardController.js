@@ -1,10 +1,10 @@
 import { render } from "pug";
-import { Board } from "../models/Board";
+import Board from "../models/Board";
 
 export const home = async (req, res) => {
     const { id } = req.params;
     try {
-        const boards = await Board.find({}).sort({createAt: "desc"});
+        const boards = await Board.find({}).sort({ createdAt: "desc" });
         return res.render("home", {boards});
     } catch (error) {
         console.log("error :: "+error);
@@ -19,7 +19,7 @@ export const search = async (req, res) => {
     if(keyword){
         boards = await Board.find({
             title: {
-                $regex: new RegExp(keyword,"i")
+                $regex: new RegExp(keyword,"i") //정규화 대소문 구분x
             },
         });
     }
@@ -62,7 +62,7 @@ export const getDeleteBoard = async(req, res) => {
 }
 
 export const getWriteBoard = (req, res) => {
-    return res.render("Write");
+    return res.render("write");
 };
 
 export const postWriteBoard = async (req, res) => {
@@ -82,66 +82,3 @@ export const postWriteBoard = async (req, res) => {
         });
     }
 };
-
-// let boards = [
-//     {
-//         id: 1,
-//         title: "1st board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 2,
-//         title: "2nd board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 3,
-//         title: "3rd board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 4,
-//         title: "4th board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 5,
-//         title: "5th board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 6,
-//         title: "6th board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 7,
-//         title: "7th board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 8,
-//         title: "8th board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 9,
-//         title: "9th board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-//     {
-//         id: 10,
-//         title: "10th board",
-//         text: "Node.js simple project 입니다 📝",
-//         imgUrl: "/image/Node.js.png",
-//     },
-// ];

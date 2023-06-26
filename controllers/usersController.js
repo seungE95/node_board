@@ -2,7 +2,7 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 
 export const getJoin = (req,res) =>{
-    return res.render("Join");
+    return res.render("join");
 }
 
 export const postJoin = async (req,res) =>{
