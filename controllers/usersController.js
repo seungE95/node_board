@@ -79,3 +79,99 @@ export const edit = (req,res) =>{
 export const remove = (req,res) =>{
     return res.render("Delete Users");
 }
+
+export const naverLogin = (req,res) =>{
+    const config = {
+        client_id: process.env.NAVER_CLIENT_ID,
+        client_secret: process.env.NAVER_CLIENT_SECRET,
+        state: process.env.RANDOM_STATE,
+        redirectURI: process.env.MY_CALLBACK_URL,
+    };
+
+    const {client_id, client_secret, state, redirectURI } = config;
+
+    api_url =
+        "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id="+
+        client_id +
+        "&redirect_uri=" +
+        redirectURI +
+        "&state=" +
+        state;
+
+        //res.writeHead(200, {"Content-Type": "text/html;charset=utf-8"});
+        res.redirect(api_url);
+}
+
+export const getNaverCallback = (req,res) =>{
+    return res.redirect("/user/member");
+}
+
+export const postNaverCallback = (req,res) =>{
+    const config = {
+        client_id: process.env.NAVER_CLIENT_ID,
+        client_secret: process.env.NAVER_CLIENT_SECRET,
+        state: process.env.RANDOM_STATE,
+        redirectURI: process.env.MY_CALLBACK_URL,
+    };
+
+    const {client_id, client_secret, state, redirectURI } = config;
+    const code = req.query.code;
+    state - req.query.state;
+    api_url =
+        'https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id='+
+        client_id +
+        "&client_secret=" +
+        client_secret +
+        "&redirect_uri=" +
+        redirectURI +
+        "&code=" +
+        code +
+        "&state=" +
+        state;
+    let request = require("requeset");
+    let options = {
+        url: api_url,
+        headers: {
+            "X-Naver-Client-Id": client_id,
+            "X-Naver-Client-Secret": client_secret,
+        },
+    };
+
+    request.get(options, function(error, response, body){
+        if(!error && response.statusCode == 200){
+            res.writedHead(200, {"Content-Type": "text/json;charset=utf-8"});
+            res.end(body);
+        } else {
+            res.status(response.statusCode).end();
+            console.log("error = " + response.statusCode);
+        }
+    });
+};
+
+export const getNaverMember = (req,res) =>{
+    return res.redirect("/");
+}
+
+export const postNaverMember = (req,res) =>{
+    api_url = "https://openapi.naver.com/v1/nid/me";
+    let request = require("request");
+    let token = req.body.token;
+    let header = "Bearer " + token;     //Bearer 다음에 공백 추가
+    let options = {
+        url: api_url,
+        header: {Authorization: header},
+    };
+
+    request.get(options, function (error, response, body){
+        if(!error && response.statusCode == 200){
+            res.writedHead(200, {"Contnet-Type": "text/json;charset=utf-8"});
+            res.end(body);
+        } else {
+            console.log("error");
+            if(response != null){
+                res.status(response.statusCode).end();
+                console.log("error = " + response.statusCode);
+            }
+        }
+    })
+}
