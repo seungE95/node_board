@@ -65,15 +65,58 @@ export const postLogin = async (req,res) =>{
 }
 
 export const logout = (req,res) =>{
-    return res.send("Log out ☕")
+    req.session.destroy();
+    return res.redirect("/")
 }
 
 export const see = (req,res) =>{
     return res.render("See Users");
 }
 
-export const edit = (req,res) =>{
-    return res.render("Edit Users");
+export const getEdit = (req,res) =>{
+    return res.render("edit-profile");
+}
+
+export const postEdit = async (req,res) =>{
+    const {
+        session: {
+            user: { _id, avatar, email: sessionEmail, username: sessionUsername },
+        },
+        body: { name, email, username, region },
+        file,
+    } = req;
+    let searchParam = [];
+    if(sessionEmail !== email){
+        searchParam.push({email});
+    }
+    if(sessionUsername !== username){
+        searchParam.push({username});
+    }
+    if(searchParam.length > 0){
+        const foundUser = await User.findOne({ $or: searchParam });
+        if(foundUser && foundUser._id.toString() !== _id){
+            return res.status(400).render("edit-profile", {
+                errorMessage: "이미 있는 아이디나 이메일 입니다 ❌",
+            });
+        }
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+        _id,
+        {
+            avatar: file ? file.path : avatar,
+            name,
+            email,
+            username,
+            region,
+        },
+
+        { new: true }
+    );
+
+    req.session.user = updateUser;
+
+    return res.redirect("/");
 }
 
 export const remove = (req,res) =>{
@@ -167,30 +210,30 @@ export const naverCallback = async (req,res) =>{
     }
 };
 
-export const getNaverMember = (req,res) =>{
-    return res.redirect("/");
-}
+// export const getNaverMember = (req,res) =>{
+//     return res.redirect("/");
+// }
 
-export const postNaverMember = (req,res) =>{
-    api_url = "https://openapi.naver.com/v1/nid/me";
-    let request = require("request");
-    let token = req.body.token;
-    let header = "Bearer " + token;     //Bearer 다음에 공백 추가
-    let options = {
-        url: api_url,
-        headers: {Authorization: header},
-    };
+// export const postNaverMember = (req,res) =>{
+//     api_url = "https://openapi.naver.com/v1/nid/me";
+//     let request = require("request");
+//     let token = req.body.token;
+//     let header = "Bearer " + token;     //Bearer 다음에 공백 추가
+//     let options = {
+//         url: api_url,
+//         headers: {Authorization: header},
+//     };
 
-    request.get(options, function (error, response, body){
-        if(!error && response.statusCode == 200){
-            res.writedHead(200, {"Content-Type": "text/json;charset=utf-8"});
-            res.end(body);
-        } else {
-            console.log("error");
-            if(response != null){
-                res.status(response.statusCode).end();
-                console.log("error = " + response.statusCode);
-            }
-        }
-    });
-};
+//     request.get(options, function (error, response, body){
+//         if(!error && response.statusCode == 200){
+//             res.writedHead(200, {"Content-Type": "text/json;charset=utf-8"});
+//             res.end(body);
+//         } else {
+//             console.log("error");
+//             if(response != null){
+//                 res.status(response.statusCode).end();
+//                 console.log("error = " + response.statusCode);
+//             }
+//         }
+//     });
+//};

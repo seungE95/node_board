@@ -3,13 +3,8 @@ import Board from "../models/Board";
 
 export const home = async (req, res) => {
     const { id } = req.params;
-    try {
         const boards = await Board.find({}).sort({ createdAt: "desc" });
         return res.render("home", {boards});
-    } catch (error) {
-        console.log("error :: "+error);
-    }
-    return res.render("home");
 }
 
 export const search = async (req, res) => {
@@ -45,15 +40,48 @@ export const getEditBoard = async (req, res) => {
 }
 
 export const postEditBoard = async (req, res) => {
-    const {id} = req.params;
-    const {title, imgUrl, content } = req.body;
+    const {
+        params: { id },
+        body: { title, content, boardImg },
+        file,
+    } = req;
+    
     const board = await Board.findById(id);
     if(!board){
         return res.render("404", {pageTitle: "Page Not Found"});
     }
-    await Board.findByIdAndUpdate(id, {title,imgUrl,content});
+    await Board.findByIdAndUpdate(id, {
+        title,
+        content,
+        boardImg: file ? file.path : boardImg,
+    });
     return res.redirect("/board/${id}");
-}
+};
+
+export const getWriteBoard = (req, res) => {
+    return res.render("write");
+};
+
+export const postWriteBoard = async (req, res) => {
+    const { 
+        body: { title, imgUrl, content },
+        file,
+    }= req;
+    
+    try {
+        await Board.create({
+            title,
+            content,
+            boardImg: file ? file.path : boardImg,
+        });
+        return res.redirect("/");
+    } catch (error) {
+        return res.status(400).render("write", {
+            errorMessage: error._message,
+            pageTitle: "Write",
+        });
+    }
+};
 
 export const getDeleteBoard = async(req, res) => {
     const {id} = req.params;
@@ -61,24 +89,3 @@ export const getDeleteBoard = async(req, res) => {
     return res.render("/");
 }
 
-export const getWriteBoard = (req, res) => {
-    return res.render("write");
-};
-
-export const postWriteBoard = async (req, res) => {
-    const { title, imgUrl, content } = req.body;
-    
-    try {
-        const board = await Board.create({
-            title,
-            imgUrl,
-            content,
-        });
-        return res.render("/");
-    } catch (error) {
-        return render("write", {
-            errorMessage: error._message,
-            pageTitle: "Write",
-        });
-    }
-};

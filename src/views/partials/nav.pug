@@ -3,11 +3,14 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light
         a(href="/").navbar-brand  Cafe Small House
         button(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation").navbar-toggler 
             span.navbar-toggler-icon
-
         div.collapse.navbar-collapse#navbarNavAltMarkup
             div.navbar-nav
                 a(aria-current="page" href="/").nav-link.active Home
-                a(href="/login").nav-link Login
-                a(href="/join").nav-link Join
-                a(href="/write").nav-link Wirte
-                //- a(href="#").nav-link.disabled Disabled
+                if loggedIn
+                    a(href="/users/logout").nav-link.active Logout
+                    a(href="/users/edit" style="color:var(--bs-primary);").nav-link.active #{loggedInUser.name} Profile ☕
+                    a(href="/board/write").nav-link Write
+                else
+                    a(href="/login").nav-link.active Login
+                    a(href="/join").nav-link Join
+                a(href="/search").nav-link Search

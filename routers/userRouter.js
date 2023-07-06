@@ -1,14 +1,14 @@
 import express from "express";
-import { see, edit, remove, logout, naverLogin, postNaverCallback, getNaverCallback, postNaverMember, getNaverMember } from "../controllers/usersController";
+import { see, getEdit, postEdit, remove, logout, naverLogin, naverCallback } from "../controllers/usersController";
+import { protectorMiddleware, publicOnlyMiddleware } from "../middlewares";
 
 const userRouter = express.Router();
 
-userRouter.get("/edit", edit);
-userRouter.get("/delete", remove);
-userRouter.get("/logout", logout);
-userRouter.get("/naverLogin", naverLogin);
-userRouter.route("/callback").get(getNaverCallback).post(postNaverCallback);
-userRouter.route("/member").get(getNaverMember).post(postNaverMember);
-userRouter.get("/:id", see);
+userRouter.route("/edit").all(protectorMiddleware).get(getEdit).post(postEdit);
+userRouter.route("/logout").all(protectorMiddleware).get(logout);
+userRouter.route("/naverLogin").all(publicOnlyMiddleware).get(naverLogin);
+userRouter.route("/callback").all(publicOnlyMiddleware).get(naverCallback);
+userRouter.route("/delete").get(remove);
+userRouter.route("/:id([0-9a-f]{24}",see);
 
 export default userRouter;
