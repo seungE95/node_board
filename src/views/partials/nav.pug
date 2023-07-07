@@ -9,8 +9,10 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light
                 if loggedIn
                     a(href="/users/logout").nav-link.active Logout
                     a(href="/users/edit" style="color:var(--bs-primary);").nav-link.active #{loggedInUser.name} Profile ☕
+                    a(href=`/users/${loggedInUser._id}`).nav-link My Profile
                     a(href="/board/write").nav-link Write
                 else
                     a(href="/login").nav-link.active Login
                     a(href="/join").nav-link Join
                 a(href="/search").nav-link Search
+

@@ -100,22 +100,22 @@ export const postEdit = async (req,res) =>{
             });
         }
     }
+    const isHeroku = process.env.NODE_ENV === "production";
 
     const updateUser = await User.findByIdAndUpdate(
         _id,
         {
-            avatar: file ? file.path : avatar,
+            avatar: file ? (isHeroku ? file.location : file.path) : avatar,
             name,
             email,
             username,
             region,
         },
-
         { new: true }
     );
 
     req.session.user = updateUser;
-
+    console.log(updateUser);
     return res.redirect("/");
 }
 

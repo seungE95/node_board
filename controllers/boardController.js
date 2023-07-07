@@ -64,16 +64,25 @@ export const getWriteBoard = (req, res) => {
 
 export const postWriteBoard = async (req, res) => {
     const { 
-        body: { title, imgUrl, content },
-        file,
-    }= req;
+        user: { _id },
+    } = req.session;
     
+    const {
+        body: { title, content, boardImg },
+        file,
+    } = req;
+    const isHeroku = process.env.NODE_ENV === "production";
+
     try {
-        await Board.create({
+        const newBoard = await Board.create({
             title,
             content,
-            boardImg: file ? file.path : boardImg,
+            owner: _id,
+            boardImg: file ? (isHeroku ?  file.location : file.path) : boardImg,
         });
+        const user = await User.findById(_id);
+        user.boards.push(newBoard._id);
+        user.save();
         return res.redirect("/");
     } catch (error) {
         return res.status(400).render("write", {
